@@ -6,7 +6,7 @@ const router = express.Router();
 const { authenticateUser } = require('./middleware/auth-user');
 const { asyncHandler } = require('./middleware/async-handler');
 
-
+// Route that get current user (authorized).
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
     const user = req.currentUser;
     res.json({
@@ -33,7 +33,7 @@ router.post('/users', asyncHandler(async (req, res) => {
     }
 }));
 
-// Route that  a new user.
+// Route get all courses.
 router.get('/courses', asyncHandler(async (req, res) => {
     let courses = await Course.findAll({
         include: {
@@ -49,7 +49,7 @@ router.get('/courses', asyncHandler(async (req, res) => {
     res.json(courses);
 }));
 
-// Route that  a new user.
+// Route to get one course by id.
 router.get('/courses/:id', asyncHandler(async (req, res) => {
     let course = await Course.findByPk(req.params.id,
         {
@@ -66,5 +66,48 @@ router.get('/courses/:id', asyncHandler(async (req, res) => {
     res.json(course);
 }));
 
+// Route that creates a new course.
+router.post('/courses', asyncHandler(async (req, res) => {
+    console.log(req.body)
+    try {
+        const course = await Course.create(req.body);
+        const courseId = course.dataValues.id
+        console.log(courseId)
+
+        res.status(201).location(`/courses/${courseId}`).json({ "message": "Course successfully created!" }).end();
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+            const errors = error.errors.map(err => err.message);
+            res.status(400).json({ errors });
+        } else {
+            throw error;
+        }
+    }
+}));
+
+// Route that creates a new course.
+router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
+    // console.log(req.body)
+    const user = req.currentUser.id;
+    try {
+        let course = await Course.findByPk(req.params.id);
+        console.log(user === course.userId)
+        if (user === course.userId) {
+            await course.update(req.body);
+            res.status(204).json({ "message": "Course successfully created!" }).end();
+        } else {
+            const error = new Error("Not autorization - 403");
+            error.status = 403;
+        }
+
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+            const errors = error.errors.map(err => err.message);
+            res.status(400).json({ errors });
+        } else {
+            throw error;
+        }
+    }
+}));
 
 module.exports = router;
