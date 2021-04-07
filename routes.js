@@ -4,17 +4,7 @@ const express = require('express');
 const { User, Course } = require('./models');
 const router = express.Router();
 const { authenticateUser } = require('./middleware/auth-user');
-
-
-function asyncHandler(cb){
-    return async (req,res, next) => {
-        try {
-            await cb(req, res, next);
-        } catch(err) {
-            next(err);
-        }
-    }
-}
+const { asyncHandler } = require('./middleware/async-handler');
 
 
 router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
@@ -43,6 +33,7 @@ router.post('/users', asyncHandler(async (req, res) => {
     }
 }));
 
+// Route that  a new user.
 router.get('/courses', asyncHandler(async (req, res) => {
     let courses = await Course.findAll({
         include: {
@@ -56,6 +47,23 @@ router.get('/courses', asyncHandler(async (req, res) => {
         }
     });
     res.json(courses);
+}));
+
+// Route that  a new user.
+router.get('/courses/:id', asyncHandler(async (req, res) => {
+    let course = await Course.findByPk(req.params.id,
+        {
+            include: {
+                model: User,
+                attributes: {
+                    exclude: ['createdAt', 'updatedAt', 'password']
+                }
+            },
+            attributes: {
+                exclude: ['createdAt', 'updatedAt']
+            }
+        });
+    res.json(course);
 }));
 
 
