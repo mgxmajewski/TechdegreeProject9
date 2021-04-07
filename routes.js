@@ -88,15 +88,15 @@ router.post('/courses', asyncHandler(async (req, res) => {
 // Route that creates a new course.
 router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
     // console.log(req.body)
+
     const user = req.currentUser.id;
+    console.log(user)
     try {
         let course = await Course.findByPk(req.params.id);
         console.log(user === course.userId)
         if (user === course.userId) {
             await course.update(req.body);
             res.status(204).end();
-        } else {
-            res.status(403).json({ 'message': 'Access denied, 403' });
         }
 
     } catch (error) {
@@ -117,8 +117,6 @@ router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) =>
         if (user === course.userId) {
             await course.destroy(req.body);
             res.status(204).end();
-        } else {
-            res.status(403).json({ 'message': 'Access denied, 403' });
         }
 
     } catch (error) {
