@@ -4,6 +4,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const db = require('./models/index')
+const routes = require('./routes');
 
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
@@ -26,9 +27,6 @@ app.use('/api', routes);
     console.error('Error connecting to the database: ', error);
   }
 })();
-
-
-
 
 // setup a friendly greeting for the root route
 app.get('/', (req, res) => {
