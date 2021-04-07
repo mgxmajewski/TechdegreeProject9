@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         estimatedTime: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             validate: {
                 notEmpty: {
                     // custom error message
@@ -38,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         materialsNeeded: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
             validate: {
                 notEmpty: {
                     // custom error message
