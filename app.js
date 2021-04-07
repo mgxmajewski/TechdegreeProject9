@@ -14,6 +14,8 @@ const app = express();
 // setup morgan which gives us http request logging
 app.use(morgan('dev'));
 
+app.use(express.json());
+app.use('/api', routes);
 
 // Test db connection
 (async () => {
@@ -24,6 +26,8 @@ app.use(morgan('dev'));
     console.error('Error connecting to the database: ', error);
   }
 })();
+
+
 
 
 // setup a friendly greeting for the root route
