@@ -44,7 +44,17 @@ router.post('/users', asyncHandler(async (req, res) => {
 }));
 
 router.get('/courses', asyncHandler(async (req, res) => {
-    let courses = await Course.findAll();
+    let courses = await Course.findAll({
+        include: {
+            model: User,
+            attributes: {
+                exclude: ['createdAt', 'updatedAt', 'password']
+            }
+        },
+        attributes: {
+            exclude: ['createdAt', 'updatedAt']
+        }
+    });
     res.json(courses);
 }));
 
