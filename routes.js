@@ -94,10 +94,7 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
         console.log(user === course.userId)
         if (user === course.userId) {
             await course.update(req.body);
-            res.status(204).json({ "message": "Course successfully created!" }).end();
-        } else {
-            const error = new Error("Not autorization - 403");
-            error.status = 403;
+            res.status(204).end();
         }
 
     } catch (error) {
@@ -105,9 +102,35 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
             const errors = error.errors.map(err => err.message);
             res.status(400).json({ errors });
         } else {
-            throw error;
+            const errors = error.errors.map(err => err.message);
+            res.status(403).json({ errors })
+            throw errors
         }
     }
 }));
+
+router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
+    // console.log(req.body)
+    const user = req.currentUser.id;
+    try {
+        let course = await Course.findByPk(req.params.id);
+        if (user === course.userId) {
+            await course.destroy(req.body);
+            res.status(204).end();
+        }
+
+    } catch (error) {
+        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
+            const errors = error.errors.map(err => err.message);
+            res.status(400).json({ errors });
+        } else {
+            const errors = error.errors.map(err => err.message);
+            res.status(403).json({ errors })
+            throw errors
+        }
+    }
+}));
+
+
 
 module.exports = router;
