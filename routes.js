@@ -3,6 +3,7 @@
 const express = require('express');
 const { User } = require('./models');
 const router = express.Router();
+const { authenticateUser } = require('./middleware/auth-user');
 
 
 function asyncHandler(cb){
@@ -14,6 +15,14 @@ function asyncHandler(cb){
         }
     }
 }
+
+
+router.get('/users', authenticateUser, asyncHandler(async (req, res) => {
+    const user = req.currentUser;
+    res.json({
+        user
+    });
+}));
 
 // Route that creates a new user.
 router.post('/users', asyncHandler(async (req, res) => {
