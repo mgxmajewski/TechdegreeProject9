@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const { User } = require('./models');
+const { User, Course } = require('./models');
 const router = express.Router();
 const { authenticateUser } = require('./middleware/auth-user');
 
@@ -42,5 +42,11 @@ router.post('/users', asyncHandler(async (req, res) => {
         }
     }
 }));
+
+router.get('/courses', asyncHandler(async (req, res) => {
+    let courses = await Course.findAll();
+    res.json(courses);
+}));
+
 
 module.exports = router;
