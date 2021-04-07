@@ -95,6 +95,8 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
         if (user === course.userId) {
             await course.update(req.body);
             res.status(204).end();
+        } else {
+            res.status(403).json({ 'message': 'Access denied, 403' });
         }
 
     } catch (error) {
@@ -102,9 +104,7 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
             const errors = error.errors.map(err => err.message);
             res.status(400).json({ errors });
         } else {
-            const errors = error.errors.map(err => err.message);
-            res.status(403).json({ errors })
-            throw errors
+            throw error
         }
     }
 }));
@@ -117,6 +117,8 @@ router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) =>
         if (user === course.userId) {
             await course.destroy(req.body);
             res.status(204).end();
+        } else {
+            res.status(403).json({ 'message': 'Access denied, 403' });
         }
 
     } catch (error) {
@@ -124,9 +126,7 @@ router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) =>
             const errors = error.errors.map(err => err.message);
             res.status(400).json({ errors });
         } else {
-            const errors = error.errors.map(err => err.message);
-            res.status(403).json({ errors })
-            throw errors
+            throw error
         }
     }
 }));
