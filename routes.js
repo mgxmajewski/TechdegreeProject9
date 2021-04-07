@@ -72,8 +72,6 @@ router.post('/courses', asyncHandler(async (req, res) => {
     try {
         const course = await Course.create(req.body);
         const courseId = course.dataValues.id
-        console.log(courseId)
-
         res.status(201).location(`/courses/${courseId}`).json({ "message": "Course successfully created!" }).end();
     } catch (error) {
         if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
@@ -87,7 +85,7 @@ router.post('/courses', asyncHandler(async (req, res) => {
 
 // Route that creates a new course.
 router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
-    // console.log(req.body)
+
     const user = req.currentUser.id;
     try {
         let course = await Course.findByPk(req.params.id);
@@ -98,7 +96,6 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
         } else {
             res.status(403).json({ 'message': 'Access denied, 403' });
         }
-
     } catch (error) {
         if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
             const errors = error.errors.map(err => err.message);
@@ -110,7 +107,7 @@ router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
 }));
 
 router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
-    // console.log(req.body)
+
     const user = req.currentUser.id;
     try {
         let course = await Course.findByPk(req.params.id);
@@ -120,7 +117,6 @@ router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) =>
         } else {
             res.status(403).json({ 'message': 'Access denied, 403' });
         }
-
     } catch (error) {
         if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
             const errors = error.errors.map(err => err.message);
@@ -130,7 +126,5 @@ router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) =>
         }
     }
 }));
-
-
 
 module.exports = router;
