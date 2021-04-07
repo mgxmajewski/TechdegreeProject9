@@ -18,7 +18,6 @@ exports.authenticateUser = async (req, res, next) => {
             if (authenticated) {
                 console.log(`Authentication successful for username: ${user.username}`);
                 req.currentUser = user;
-                // res.locals.currentUser = user;
             } else {
                 message = `Authentication failure for username: ${user.username}`;
             }
@@ -29,10 +28,7 @@ exports.authenticateUser = async (req, res, next) => {
         message = 'Auth header not found';
     }
 
-    if (message === 'Auth header not found') {
-        console.warn(message);
-        res.status(403).json({ message: 'Access Denied' });
-    } else if (message) {
+    if (message) {
         console.warn(message);
         res.status(401).json({ message: 'Access Denied' });
     } else {
